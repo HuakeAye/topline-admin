@@ -2,10 +2,10 @@
   <div class="login-wrap">
     <div class="login-form-wrap">
       <div class="login-head">
-
+        <img src="./logo_index.png" alt="">
       </div>
       <div class="login-form">
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="form">
           <el-form-item prop="mobile">
             <el-input v-model="form.mobile"></el-input>
           </el-form-item>
@@ -14,7 +14,7 @@
               <el-input v-model="form.code" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="10" :offset="2">
-              <el-button>获取验证码</el-button>
+              <el-button @click="handleSendCode">获取验证码</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'AppLogin',
   data () {
@@ -38,6 +39,16 @@ export default {
     }
   },
   methods: {
+    handleSendCode () {
+      const { mobile } = this.form.mobile
+      console.log(mobile)
+      axios({
+        method: 'GET',
+        url: `https://mock.boxuegu.com/mock/434/v1_0/captchas/${mobile}`
+      }).then(res => {
+        console.log(res.data)
+      })
+    }
   }
 }
 </script>
@@ -65,5 +76,8 @@ export default {
       width: 100%;
     }
   }
+}
+.el-form-item__content {
+  padding: 0;
 }
 </style>
