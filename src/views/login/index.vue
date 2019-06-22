@@ -28,6 +28,7 @@
 
 <script>
 import axios from 'axios'
+import '@/vendor/gt'
 export default {
   name: 'AppLogin',
   data () {
@@ -40,7 +41,7 @@ export default {
   },
   methods: {
     handleSendCode () {
-      const { mobile } = this.form.mobile
+      const { mobile } = this.form
       console.log(mobile)
       axios({
         method: 'GET',
