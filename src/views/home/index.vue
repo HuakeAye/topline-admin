@@ -1,13 +1,17 @@
 <template>
   <div>
-    <p>home</p>
+    <p>{{message}}</p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'AppHome',
-  data () {}
+  data () {
+    return {
+      message: 'hello home'
+    }
+  }
 }
 </script>
 

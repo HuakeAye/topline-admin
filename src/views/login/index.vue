@@ -2,23 +2,27 @@
   <div class="login-wrap">
     <div class="login-form-wrap">
       <div class="login-head">
-        <img src="./logo_index.png" alt="">
+        <img src="./logo_index.png"
+             alt="">
       </div>
       <div class="login-form">
-        <el-form ref="form" :model="form">
+        <el-form ref="form"
+                 :model="form">
           <el-form-item prop="mobile">
             <el-input v-model="form.mobile"></el-input>
           </el-form-item>
           <el-form-item prop="code">
             <el-col :span="10">
-              <el-input v-model="form.code" placeholder="验证码"></el-input>
+              <el-input v-model="form.code"
+                        placeholder="验证码"></el-input>
             </el-col>
-            <el-col :span="10" :offset="2">
+            <el-col :span="10"
+                    :offset="2">
               <el-button @click="handleSendCode">获取验证码</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>
-            <el-button>登录</el-button>
+            <el-button @click="handleLogin">登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -41,6 +45,23 @@ export default {
     }
   },
   methods: {
+    handleLogin () {
+      axios({
+        method: 'POST',
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        data: this.form
+      }).then(res => {
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+        this.$router.push({ name: 'home' })
+      }).catch(err => {
+        if (err.response.status >= 400) {
+          this.$message.error('登录失败')
+        }
+      })
+    },
     handleSendCode () {
       if (this.captchaObj) {
         return this.captchaObj.verify()
@@ -69,7 +90,7 @@ export default {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
               geetest_validate: validate } =
-            captchaObj.getValidate()
+              captchaObj.getValidate()
             console.log(challenge)
             axios({
               method: 'GET',
