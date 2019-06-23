@@ -15,5 +15,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+div {
+  background-color: #eee;
+  height: 100%;
+}
 </style>

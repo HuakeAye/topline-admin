@@ -7,7 +7,7 @@
       <el-header>
         <AppHeader />
       </el-header>
-      <el-main>Main</el-main>
+      <router-view />
     </el-container>
   </el-container>
 </template>
@@ -32,7 +32,7 @@ export default {
   background-color: rgb(255, 153, 255);
 }
 .el-header {
-  background-color: aqua;
+  background-color: #fff;
 }
 .el-main {
   background-color: aquamarine;

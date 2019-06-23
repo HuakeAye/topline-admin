@@ -7,7 +7,7 @@
            background-color="#545c64"
            text-color="#fff"
            active-text-color="#ffd04b">
-    <el-menu-item index="2">
+    <el-menu-item index="/">
       <i class="el-icon-menu"></i>
       <span slot="title">首页</span>
     </el-menu-item>
@@ -17,7 +17,7 @@
         <span>内容管理</span>
       </template>
       <el-menu-item-group>
-        <el-menu-item index="1-1">发布文章</el-menu-item>
+        <el-menu-item index="/publish">发布文章</el-menu-item>
         <el-menu-item index="1-2">内容列表</el-menu-item>
         <el-menu-item index="1-3">评论列表</el-menu-item>
         <el-menu-item index="1-4">素材管理</el-menu-item>
