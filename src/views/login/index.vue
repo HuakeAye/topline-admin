@@ -89,50 +89,44 @@ export default {
     },
 
     handleSendCode () {
-      this.$refs['ruleForm'].validate((valid) => {
-        if (!valid) {
-          return
-        }
-
-        if (this.captchaObj) {
-          return this.captchaObj.verify()
-        }
-        const { mobile } = this.form
-        console.log(mobile)
-        axios({
-          method: 'GET',
-          url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
-        }).then(res => {
-          const data = res.data.data
-          console.log(data)
-          window.initGeetest({
-            gt: data.gt,
-            challenge: data.challenge,
-            offline: !data.success,
-            new_captcha: true,
-            product: 'bind'
-          }, (captchaObj) => {
-            this.captchaObj = captchaObj
-            captchaObj.onReady(function () {
-              captchaObj.verify()
-            }).onSuccess(function () {
-              const {
-                geetest_challenge: challenge,
-                geetest_seccode: seccode,
-                geetest_validate: validate } =
-                captchaObj.getValidate()
-              console.log(challenge)
-              axios({
-                method: 'GET',
-                url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
-                params: {
-                  challenge,
-                  seccode,
-                  validate
-                }
-              }).then(res => {
-                console.log(res.data)
-              })
+      if (this.captchaObj) {
+        return this.captchaObj.verify()
+      }
+      const { mobile } = this.form
+      console.log(mobile)
+      axios({
+        method: 'GET',
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+      }).then(res => {
+        const data = res.data.data
+        console.log(data)
+        window.initGeetest({
+          gt: data.gt,
+          challenge: data.challenge,
+          offline: !data.success,
+          new_captcha: true,
+          product: 'bind'
+        }, (captchaObj) => {
+          this.captchaObj = captchaObj
+          captchaObj.onReady(function () {
+            captchaObj.verify()
+          }).onSuccess(function () {
+            const {
+              geetest_challenge: challenge,
+              geetest_seccode: seccode,
+              geetest_validate: validate } =
+              captchaObj.getValidate()
+            console.log(challenge)
+            axios({
+              method: 'GET',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              params: {
+                challenge,
+                seccode,
+                validate
+              }
+            }).then(res => {
+              console.log(res.data)
             })
           })
         })
