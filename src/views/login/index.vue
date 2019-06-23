@@ -20,7 +20,7 @@
             <el-col :span="10"
                     :offset="2">
               <el-button @click="handleSendCode"
-                         :disabled="!!codeTimer">{{codeTimer?`剩余${codeSecons}秒`:'获取验证码'}}</el-button>
+                         :disabled="!!codeTimer || codeloading">{{codeTimer?`剩余${codeSecons}秒`:'获取验证码'}}</el-button>
             </el-col>
           </el-form-item>
           <el-form-item prop="checked">
@@ -54,6 +54,8 @@ export default {
       codeSecons: 10,
       codeTimer: null,
       loginloading: false,
+      sendMobile: '', // 保存初始化成功的手机号
+      codeloading: false,
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -108,18 +110,25 @@ export default {
         if (err.trim().length > 0) {
           return
         }
-        this.showGeetest()
+        if (this.captchaObj) {
+          if (this.form.mobile !== this.sendMobile) {
+            document.body.removeChild(document.querySelector('.geetest_panel'))
+            this.showGeetest()
+          } else {
+            this.captchaObj.verify()
+          }
+        } else {
+          // 这是第一次初始化验证码
+          this.showGeetest()
+        }
       })
     },
     showGeetest () {
-      if (this.captchaObj) {
-        return this.captchaObj.verify()
-      }
-      const { mobile } = this.form
-      console.log(mobile)
+      // 点击获取验证码之后立马禁用按钮防止重复发送请求
+      this.codeloading = true
       axios({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.form.mobile}`
       }).then(res => {
         const data = res.data.data
         console.log(data)
@@ -132,7 +141,10 @@ export default {
         }, (captchaObj) => {
           this.captchaObj = captchaObj
           captchaObj.onReady(() => {
+            this.sendMobile = this.form.mobile
             captchaObj.verify()
+            // 初始化好了然按钮恢复正常
+            this.codeloading = false
           }).onSuccess(() => {
             const {
               geetest_challenge: challenge,
@@ -141,7 +153,7 @@ export default {
               captchaObj.getValidate()
             axios({
               method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.form.mobile}`,
               params: {
                 challenge,
                 seccode,
