@@ -1,14 +1,40 @@
 <template>
-  <div>
-    <p>layout</p>
-  </div>
+  <el-container>
+    <el-aside width="200px">
+      <AppAside />
+    </el-aside>
+    <el-container>
+      <el-header>
+        <AppHeader />
+      </el-header>
+      <el-main>Main</el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
+import AppAside from './conponents/AppAside'
+import AppHeader from './conponents/AppHeader'
 export default {
-
+  // name: 'Applayout',
+  components: {
+    AppAside,
+    AppHeader
+  }
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+.el-container {
+  height: 100%;
+}
+.el-aside {
+  background-color: rgb(255, 153, 255);
+}
+.el-header {
+  background-color: aqua;
+}
+.el-main {
+  background-color: aquamarine;
+}
 </style>
