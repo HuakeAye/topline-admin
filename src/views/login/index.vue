@@ -19,12 +19,19 @@
             </el-col>
             <el-col :span="10"
                     :offset="2">
-              <el-button @click="handleSendCode">获取验证码</el-button>
+              <el-button @click="handleSendCode"
+                         :disabled="!!codeTimer">{{codeTimer?`剩余${codeSecons}秒`:'获取验证码'}}</el-button>
             </el-col>
+          </el-form-item>
+          <el-form-item prop="checked">
+            <el-checkbox v-model="form.checked"></el-checkbox>
+            <span>我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
           </el-form-item>
           <el-form-item>
             <el-button @click="handleLogin"
-                       :loading="loginloading">登录</el-button>
+                       :loading="loginloading"
+                       type="primary"
+                       class="btn-login">登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -41,8 +48,11 @@ export default {
     return {
       form: {
         mobile: '18330606912',
-        code: ''
+        code: '',
+        checked: ''
       },
+      codeSecons: 10,
+      codeTimer: null,
       loginloading: false,
       rules: {
         mobile: [
@@ -52,6 +62,10 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { len: 6, message: '长度必须6位', trigger: 'blur' }
+        ],
+        checked: [
+          { required: true, message: '请同意用户协议', trigger: 'change' },
+          { pattern: /true/, message: '请同意用户协议', trigger: 'change' }
         ]
       },
       captchaObj: null
@@ -59,6 +73,7 @@ export default {
   },
   methods: {
     handleLogin () {
+      this.Countdown()
       this.$refs['ruleForm'].validate((valid) => {
         if (!valid) {
           return
@@ -89,6 +104,14 @@ export default {
     },
 
     handleSendCode () {
+      this.$refs['ruleForm'].validateField('mobile', err => {
+        if (err.trim().length > 0) {
+          return
+        }
+        this.showGeetest()
+      })
+    },
+    showGeetest () {
       if (this.captchaObj) {
         return this.captchaObj.verify()
       }
@@ -108,15 +131,14 @@ export default {
           product: 'bind'
         }, (captchaObj) => {
           this.captchaObj = captchaObj
-          captchaObj.onReady(function () {
+          captchaObj.onReady(() => {
             captchaObj.verify()
-          }).onSuccess(function () {
+          }).onSuccess(() => {
             const {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
               geetest_validate: validate } =
               captchaObj.getValidate()
-            console.log(challenge)
             axios({
               method: 'GET',
               url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
@@ -126,11 +148,21 @@ export default {
                 validate
               }
             }).then(res => {
-              console.log(res.data)
+              this.Countdown()
             })
           })
         })
       })
+    },
+    Countdown () {
+      this.codeTimer = window.setInterval(() => {
+        this.codeSecons--
+        if (this.codeSecons <= 0) {
+          this.codeSecons = 10
+          window.clearInterval(this.codeTimer)
+          this.codeTimer = null
+        }
+      }, 1000)
     }
   }
 }
@@ -142,7 +174,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ccc;
+  background: url(./login_bg.jpg);
   .login-head {
     display: flex;
     justify-content: center;
@@ -162,5 +194,8 @@ export default {
 }
 .el-form-item__content {
   padding: 0;
+}
+.el-checkbox {
+  margin-right: 10px;
 }
 </style>
