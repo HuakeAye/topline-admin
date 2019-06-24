@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import '@/vendor/gt'
 export default {
   name: 'AppLogin',
@@ -75,7 +74,6 @@ export default {
   },
   methods: {
     handleLogin () {
-      this.Countdown()
       this.$refs['ruleForm'].validate((valid) => {
         if (!valid) {
           return
@@ -86,9 +84,9 @@ export default {
 
     sublogin () {
       this.loginloading = true
-      axios({
+      this.$http({
         method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        url: '/authorizations',
         data: this.form
       }).then(res => {
         window.localStorage.setItem('user_info', JSON.stringify(res.data.data))
@@ -127,9 +125,9 @@ export default {
     showGeetest () {
       // 点击获取验证码之后立马禁用按钮防止重复发送请求
       this.codeloading = true
-      axios({
+      this.$http({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.form.mobile}`
+        url: `/captchas/${this.form.mobile}`
       }).then(res => {
         const data = res.data.data
         console.log(data)
@@ -152,9 +150,9 @@ export default {
               geetest_seccode: seccode,
               geetest_validate: validate } =
               captchaObj.getValidate()
-            axios({
+            this.$http({
               method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.form.mobile}`,
+              url: `/sms/codes/${this.form.mobile}`,
               params: {
                 challenge,
                 seccode,
@@ -187,7 +185,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url(./login_bg.jpg);
+  background: url(./loginbj.jpg);
+  background-size: 100%;
   .login-head {
     display: flex;
     justify-content: center;
