@@ -18,7 +18,7 @@ const router = new Router({
         {
           name: 'publish',
           path: '/publish',
-          component: () => import('@/views/home')
+          component: () => import('@/views/publish')
         }
       ]
     },

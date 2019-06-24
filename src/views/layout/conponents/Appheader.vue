@@ -30,7 +30,6 @@ export default {
   },
   created () {
     this.userinfo = JSON.parse(window.localStorage.getItem('user_info'))
-    console.log(this)
   }
 }
 </script>
