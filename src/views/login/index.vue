@@ -178,7 +178,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .login-wrap {
   height: 100%;
   display: flex;

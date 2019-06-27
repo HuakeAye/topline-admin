@@ -5,8 +5,18 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
 import axios from 'axios'
+import JSONBig from 'json-bigint'
 
+// axios.defaults.baseURL = 'http://toutiao.course.itcast.cn/mp/v1_0/'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+
+axios.defaults.transformResponse = [function (data) {
+  try {
+    return JSONBig.parse(data)
+  } catch (err) {
+    return data
+  }
+}]
 
 // 请求拦截器
 axios.interceptors.request.use((config) => {
@@ -21,7 +31,11 @@ axios.interceptors.request.use((config) => {
 
 // 响应拦截器
 axios.interceptors.response.use((response) => {
-  return response.data.data
+  if (typeof response.data === 'object' && response.data.data) {
+    return response.data.data
+  } else {
+    return response.data
+  }
 }, (error) => {
   return Promise.reject(error)
 })

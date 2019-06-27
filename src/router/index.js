@@ -26,6 +26,11 @@ const router = new Router({
           neme: 'article',
           path: '/article',
           component: () => import('@/views/article')
+        },
+        {
+          name: 'publish-Edit',
+          path: '/publish/:id',
+          component: () => import('@/views/publish')
         }
       ]
     },

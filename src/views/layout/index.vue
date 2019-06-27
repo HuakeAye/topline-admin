@@ -7,7 +7,9 @@
       <el-header>
         <AppHeader />
       </el-header>
-      <router-view />
+      <el-main>
+        <router-view />
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -35,6 +37,6 @@ export default {
   background-color: #fff;
 }
 .el-main {
-  background-color: aquamarine;
+  background-color: #eee;
 }
 </style>
