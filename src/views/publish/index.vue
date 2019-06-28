@@ -2,7 +2,7 @@
   <el-card class="publish-card">
     <div slot="header"
          class="header-card">
-      <span>发布文章</span>
+      <span>{{isEdit?'更新':'发布'}}文章</span>
       <div>
         <el-button type="success"
                    @click="handlePublish(false)"
