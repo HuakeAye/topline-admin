@@ -5,10 +5,11 @@
       <span>发布文章</span>
       <div>
         <el-button type="success"
-                   @click="handlePublish"
+                   @click="handlePublish(false)"
                    :disabled="editLoading"
-                   :loading="publishloading">发布</el-button>
+                   :loading="publishloading">{{isEdit?'更改':'发布'}}</el-button>
         <el-button :disabled="editLoading"
+                   @click="handlePublish(true)"
                    type="primary">存入草稿</el-button>
       </div>
     </div>
@@ -87,15 +88,21 @@ export default {
     handlePublish () {
       this.publishloading = true
       if (this.isEdit) {
-        this.submitEdit()
+        // 这里执行编辑操作
+        this.submitEdit().then(() => {
+          this.publishloading = false
+        })
       } else {
-        this.submitadd()
+        // 这里执行发布操作
+        this.submitadd().then(() => {
+          this.publishloading = false
+        })
       }
     },
     submitEdit (draft) {
-      this.$http({
+      return this.$http({
         method: 'PUT',
-        url: '/articles',
+        url: `/articles/${this.$route.params.id}`,
         data: this.articleForm,
         params: {
           draft
@@ -106,18 +113,16 @@ export default {
           message: '更改成功',
           type: 'success'
         })
-        this.publishloading = false
       }).catch(err => {
-        console.log(err)
+        console.log(err.response.status)
         this.$message({
           message: '更改失败',
           type: 'warning'
         })
-        this.publishloading = false
       })
     },
     submitadd (draft) {
-      this.$http({
+      return this.$http({
         method: 'POST',
         url: '/articles',
         data: this.articleForm,
@@ -129,14 +134,12 @@ export default {
           message: '发布成功',
           type: 'success'
         })
-        this.publishloading = false
       }).catch(err => {
         console.log(err)
         this.$message({
           message: '发布失败',
           type: 'warning'
         })
-        this.publishloading = false
       })
     }
   }

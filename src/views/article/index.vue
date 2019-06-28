@@ -139,8 +139,7 @@ export default {
       },
       // 获取频道数据
       channel: [],
-      page: 1,
-      filterData: {}
+      page: 1
     }
   },
   created () {
@@ -148,11 +147,6 @@ export default {
   },
   methods: {
     onSubmit () {
-      for (var key in this.filterParams) {
-        if (this.filterParams[key]) {
-          this.filterData[key] = this.filterParams[key]
-        }
-      }
       this.page = 1
       this.loadArticles(this.page)
     },
@@ -188,7 +182,12 @@ export default {
       this.loadArticles(page)
     },
     loadArticles (page = 1) {
-      const filterData = this.filterData
+      const filterData = {}
+      for (let key in this.filterParams) {
+        if (this.filterParams[key]) {
+          filterData[key] = this.filterParams[key]
+        }
+      }
       this.articleLoading = true
       this.$http({
         method: 'GET',
