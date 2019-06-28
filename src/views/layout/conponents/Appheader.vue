@@ -14,7 +14,7 @@
         </span>
         <el-dropdown-menu>
           <el-dropdown-item>账户信息</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click.native="loginout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -30,6 +30,12 @@ export default {
   },
   created () {
     this.userinfo = JSON.parse(window.localStorage.getItem('user_info'))
+  },
+  methods: {
+    loginout () {
+      window.localStorage.removeItem('user_info')
+      this.$router.push({ name: 'login' })
+    }
   }
 }
 </script>
